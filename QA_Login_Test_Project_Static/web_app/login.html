@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sample Login Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: Arial, sans-serif; background: #f5f7fa; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; }
+        .card { background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); width:320px; }
+        h2 { margin-top:0; text-align:center; }
+        label { display:block; margin:10px 0 6px; font-size:14px; }
+        input[type=text], input[type=password] { width:100%; padding:10px; border:1px solid #dfe4ea; border-radius:4px; box-sizing:border-box; }
+        .row { margin-top:12px; display:flex; align-items:center; justify-content:space-between; }
+        button { width:100%; padding:10px; background:#2563eb; color:white; border:none; border-radius:4px; margin-top:12px; cursor:pointer; }
+        .message { margin-top:14px; min-height:18px; font-size:14px; }
+        .success { color: #059669; }
+        .error { color: #dc2626; }
+        .small { font-size:13px; color:#6b7280; text-align:center; margin-top:8px; }
+    </style>
+</head>
+<body>
+    <div class="card" role="main">
+        <h2>Login</h2>
+        <label for="username">Username</label>
+        <input id="username" type="text" placeholder="Enter username" aria-label="username" />
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="Enter password" aria-label="password" />
+        <div class="row">
+            <label><input id="remember" type="checkbox"> Remember Me</label>
+        </div>
+        <button id="loginBtn">Login</button>
+        <p id="message" class="message" role="status"></p>
+        <p class="small">Use username <code>student</code> and password <code>Password123</code></p>
+    </div>
+
+<script>
+(function(){
+    const VALID_USER = "student";
+    const VALID_PASS = "Password123";
+    const userEl = document.getElementById('username');
+    const passEl = document.getElementById('password');
+    const msgEl = document.getElementById('message');
+    const rememberEl = document.getElementById('remember');
+
+    if (localStorage.getItem('rememberedUser')) {
+        userEl.value = localStorage.getItem('rememberedUser');
+        rememberEl.checked = true;
+    }
+
+    function setMessage(text, type) {
+        msgEl.textContent = text;
+        msgEl.className = 'message ' + (type === 'success' ? 'success' : 'error');
+    }
+
+    document.getElementById('loginBtn').addEventListener('click', function(){
+        const u = userEl.value.trim();
+        const p = passEl.value;
+        if (!u || !p) {
+            setMessage('Username & Password are required', 'error');
+            return;
+        }
+        if (u === VALID_USER && p === VALID_PASS) {
+            setMessage('Login successful!', 'success');
+            if (rememberEl.checked) {
+                localStorage.setItem('rememberedUser', u);
+            } else {
+                localStorage.removeItem('rememberedUser');
+            }
+            setTimeout(function(){
+                document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;"><h1>Dashboard</h1></div>';
+            }, 1000);
+        } else {
+            setMessage('Invalid credentials', 'error');
+        }
+    });
+})();
+</script>
+</body>
+</html>
